@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Gestor de Inversiones Inmobiliarias 9%</title>
+
+    <style>
+
+        :root { --primary: #2563eb; --secondary: #1e293b; --success: #16a34a; }
+
+        body { font-family: 'Segoe UI', sans-serif; background: #f1f5f9; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+
+        .container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 1000px; width: 100%; }
+
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+
+        h2 { color: var(--secondary); margin-top: 0; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
+
+        label { display: block; margin-top: 10px; font-size: 0.85rem; font-weight: 600; color: #64748b; }
+
+        input { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; }
+
+        button { width: 100%; background: var(--primary); color: white; padding: 12px; border: none; border-radius: 6px; margin-top: 20px; cursor: pointer; font-weight: bold; }
+
+        button:hover { background: #1d4ed8; }
+
+        .results { background: var(--secondary); color: white; padding: 15px; border-radius: 8px; margin-top: 20px; }
+
+        .res-line { display: flex; justify-content: space-between; margin-bottom: 5px; }
+
+        .list-card { grid-column: span 2; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+
+        th { text-align: left; background: #f8fafc; padding: 10px; font-size: 0.8rem; }
+
+        td { padding: 10px; border-bottom: 1px solid #e2e8f0; font-size: 0.9rem; }
+
+        .tag { padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.8rem; }
+
+        .tag-high { background: #dcfce7; color: #166534; }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <h2>Calculadora de Análisis</h2>
+
+        <label>Alias del piso (Ej: Calle Mayor 5)</label>
+
+        <input type="text" id="alias" placeholder="Piso Alicante 1">
+
+        
+
+        <label>Enlace Idealista</label>
+
+        <input type="text" id="link" placeholder="https://www.idealista.com/...">
+
+        
+
+        <label>Precio Compra (€)</label>
+
+        <input type="number" id="precio" placeholder="105000">
+
+        
+
+        <div style="display:flex; gap:10px">
+
+            <div style="flex:1">
+
+                <label>IBI Anual (€)</label>
+
+                <input type="number" id="ibi" value="350">
+
+            </div>
+
+            <div style="flex:1">
+
+                <label>Comunidad (€/mes)</label>
+
+                <input type="number" id="comunidad" value="40">
+
+            </div>
+
+        </div>
+
+        <div class="results">
+
+            <div class="res-line"><span>Alquiler Bruto (9%):</span> <span id="alqBruto">0 €</span></div>
+
+            <div class="res-line"><span>Inversión Total (+12%):</span> <span id="totalInv">0 €</span></div>
+
+        </div>
+
+        <button onclick="guardarPiso()">Guardar en mi Lista</button>
+
+    </div>
+
+    <div class="card">
+
+        <h2>Cómo lograr el 9% neto</h2>
+
+        <p style="font-size: 0.9rem; color: #475569;">Para que un piso de <b>105.000€</b> sea rentable al 9% real:</p>
+
+        <ul style="font-size: 0.85rem; color: #475569;">
+
+            <li>Inversión total real con impuestos: <b>~117.600€</b></li>
+
+            <li>Alquiler necesario: <b>~800€/mes</b></li>
+
+            <li>Busca pisos de 3 habitaciones para alquilar por separado o en zonas de alta demanda (Alicante/Murcia).</li>
+
+        </ul>
+
+        
+
+    </div>
+
+    <div class="card list-card">
+
+        <h2>Mis Pisos Analizados</h2>
+
+        <table id="tablaPisos">
+
+            <thead>
+
+                <tr>
+
+                    <th>Alias / Link</th>
+
+                    <th>Inversión Total</th>
+
+                    <th>Alquiler Sug.</th>
+
+                    <th>Renta Neta Est.</th>
+
+                    <th>Acciones</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody></tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<script>
+
+    function calcularPrevio() {
+
+        const p = parseFloat(document.getElementById('precio').value) || 0;
+
+        document.getElementById('alqBruto').innerText = ((p * 0.09) / 12).toFixed(2) + " €";
+
+        document.getElementById('totalInv').innerText = (p * 1.12).toLocaleString() + " €";
+
+    }
+
+    document.getElementById('precio').addEventListener('input', calcularPrevio);
+
+    function guardarPiso() {
+
+        const alias = document.getElementById('alias').value || "Piso sin nombre";
+
+        const link = document.getElementById('link').value;
+
+        const precio = parseFloat(document.getElementById('precio').value);
+
+        const ibi = parseFloat(document.getElementById('ibi').value);
+
+        const comunidad = parseFloat(document.getElementById('comunidad').value);
+
+        if(!precio) return alert("Pon un precio");
+
+        const invTotal = precio * 1.12;
+
+        const alqBruto = (precio * 0.09) / 12;
+
+        const rentaNeta = (((alqBruto * 12) - ibi - (comunidad * 12)) / invTotal * 100).toFixed(2);
+
+        const tabla = document.getElementById('tablaPisos').getElementsByTagName('tbody')[0];
+
+        const fila = tabla.insertRow();
+
+        fila.innerHTML = `
+
+            <td><a href="${link}" target="_blank">${alias}</a></td>
+
+            <td>${invTotal.toLocaleString()} €</td>
+
+            <td>${alqBruto.toFixed(2)} €</td>
+
+            <td><span class="tag tag-high">${rentaNeta} %</span></td>
+
+            <td><button onclick="this.parentElement.parentElement.remove()" style="margin:0; padding:5px; background:red">Borrar</button></td>
+
+        `;
+
+    }
+
+</script>
+
+</body>
+
+</html>
